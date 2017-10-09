@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta charset="utf-8" />
+    <meta name="description" content="ร่วมโหวตเสื้อกันหนาวโรงเรียนในโครงการ ACSP Product Design ปีที่ 5" />
+    <meta name="author" content="สภานักเรียนอัสสัมชัญสมุทรปราการ"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:author" content="https://www.facebook.com/ACPowerParty"/>
+    <meta property="og:image" content="http://acspsc.com/img/og_image.png"/>
+    <meta property="og:url" content="http://acspsc.com/"/>
+    <meta name="theme-color" content="#ff1e00"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>ACSP Product Design #5</title>
+
+    <link rel="icon" href="img/logo.png">
+
+    <link rel="stylesheet" href="css/custom.css" />
+    <link rel="stylesheet" href="css/uikit.almost-flat.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.min.css" />
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/4.5.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/4.5.0/firebase-auth.js"></script>
+    <script defer src="/__/firebase/4.5.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/4.5.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/4.5.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+</head>
+<body>
+    <h1 id="loading">Loading...</h1>
+    <canvas id="result" style="height:calc(100vh - 80px); width:100vw"></canvas>
+
+    <footer id="footer" style="display: none;">
+        <center>สภานักเรียน</center>
+    </footer>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/uikit.min.js"></script>
+    <script src="js/components/lightbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyDch_xtPrfZnAHsJos_yyf59JHZMJ71byo",
+            authDomain: "acsp-productdesign5.firebaseapp.com",
+            databaseURL: "https://acsp-productdesign5.firebaseio.com",
+            projectId: "acsp-productdesign5",
+            storageBucket: "acsp-productdesign5.appspot.com",
+            messagingSenderId: "759072382945"
+        };
+        firebase.initializeApp(config);
+
+        // Initialize Cloud Firestore through Firebase
+        var db = firebase.firestore();
+
+        db.collection("votes")
+        .onSnapshot(function(querySnapshot) {
+            let v1 = 0;
+            let v2 = 0;
+            let v3 = 0;
+            let v4 = 0;
+            querySnapshot.forEach(function(doc) {
+                if (doc.data().vote == 1) v1++;
+                if (doc.data().vote == 2) v2++;
+                if (doc.data().vote == 3) v3++;
+                if (doc.data().vote == 4) v4++;
+            });
+            createChart(v1, v2, v3, v4);
+        });
+
+        function createChart(v1, v2, v3, v4) {
+            var loading = document.getElementById("loading");
+            var footer = document.getElementById("footer");
+            loading.style.display = 'none';
+            footer.style.display = '';
+            var ctx = document.getElementById("result").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["V1", "V2", "V3", "V4"],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [v1, v2, v3, v4],
+                        backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)'
+                        ],
+                        borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    },
+                    title: {
+                        display: true,
+                        text: 'ACSP Product Design #5 Realtime Result',
+                        fontSize: '30'
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

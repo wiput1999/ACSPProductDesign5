@@ -1,0 +1,13 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /votes/{userId} {
+      allow create: if request.auth.uid == userId
+                  && request.resource.data.size() == 2
+                  && request.resource.data.vote in [1, 2, 3, 4]
+                  && request.time.toMillis() <= 1508691599000;
+    }
+    match /votes/{anyDocument} {
+      allow read: if true;
+    }
+  }
+}
